@@ -136,4 +136,4 @@ def delete_document(doc_id):
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)

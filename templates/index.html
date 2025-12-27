@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Temu Balik Informasi (Flask)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+    <div class="max-w-6xl mx-auto">
+        
+        <div class="bg-white rounded-lg shadow-xl p-8 mb-6">
+            <h1 class="text-3xl font-bold text-indigo-900 mb-2">
+                Sistem Temu Balik Informasi
+            </h1>
+            <p class="text-gray-600 mb-6">
+                Python Flask Backend: Cosine Similarity dengan TF-IDF
+            </p>
+
+            <form action="/" method="POST" class="flex gap-2 mb-6">
+                <input 
+                    type="text" 
+                    name="search_query"
+                    value="{{ query }}"
+                    placeholder="Masukkan query pencarian..."
+                    class="flex-1 px-4 py-3 border-2 border-indigo-200 rounded-lg focus:outline-none focus:border-indigo-500"
+                >
+                <button type="submit" class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition flex items-center gap-2">
+                    <i data-lucide="search" width="20"></i> Cari
+                </button>
+            </form>
+
+            {% if results %}
+            <div class="mb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                    Hasil Pencarian ({{ results|length }} dokumen)
+                </h2>
+                <div class="space-y-3">
+                    {% for doc in results %}
+                    <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-sm font-semibold text-indigo-600">
+                                Rank #{{ loop.index }} - Dokumen {{ doc.id }}
+                            </span>
+                            <span class="bg-indigo-600 text-white px-3 py-1 rounded-full text-sm">
+                                Score: {{ "%.2f"|format(doc.score * 100) }}%
+                            </span>
+                        </div>
+                        <p class="text-gray-700">{{ doc.text }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% elif query %}
+            <div class="mb-6 p-4 bg-yellow-50 text-yellow-800 rounded-lg">
+                Tidak ditemukan hasil untuk query "{{ query }}"
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="bg-white rounded-lg shadow-xl p-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-gray-800">
+                    Koleksi Dokumen ({{ documents|length }})
+                </h2>
+            </div>
+
+            <form action="/add" method="POST" class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <textarea 
+                    name="new_doc_text" 
+                    placeholder="Masukkan teks dokumen baru..." 
+                    class="w-full px-3 py-2 border border-green-300 rounded-lg mb-2 focus:outline-none focus:border-green-500" 
+                    rows="2" required></textarea>
+                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2">
+                    <i data-lucide="plus" width="18"></i> Simpan Dokumen
+                </button>
+            </form>
+
+            <div class="space-y-2">
+                {% for doc in documents %}
+                <div class="flex items-start gap-3 p-4 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition">
+                    <div class="text-gray-500 mt-1 flex-shrink-0">
+                        <i data-lucide="file-text" width="20"></i>
+                    </div>
+                    <div class="flex-1">
+                        <span class="text-sm font-semibold text-gray-600">
+                            Dokumen {{ doc.id }}
+                        </span>
+                        <p class="text-gray-700 mt-1">{{ doc.text }}</p>
+                    </div>
+                    <a href="/delete/{{ doc.id }}" class="text-red-500 hover:text-red-700 transition flex-shrink-0" onclick="return confirm('Hapus dokumen ini?')">
+                        <i data-lucide="trash-2" width="18"></i>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="mt-6 bg-white rounded-lg shadow-xl p-6">
+             <h3 class="text-lg font-semibold text-gray-800 mb-3">Tentang Sistem</h3>
+             <div class="text-gray-700 space-y-2">
+                <p><strong>Backend:</strong> Python Flask</p>
+                <p><strong>Algoritma:</strong> Implementasi manual Cosine Similarity & TF-IDF (tanpa library ML)</p>
+             </div>
+        </div>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 # Inisialisasi Stemmer Sastrawi
 factory = StemmerFactory()
-stemmer = factory.createStemmer()
+stemmer = factory.create_stemmer()
 
 # Data awal (Database sederhana dalam memori)
 documents = [

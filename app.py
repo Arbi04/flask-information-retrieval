@@ -1,8 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for
 import math
 import re
+from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 
 app = Flask(__name__)
+
+# Inisialisasi Stemmer Sastrawi
+factory = StemmerFactory()
+stemmer = factory.createStemmer()
 
 # Data awal (Database sederhana dalam memori)
 documents = [
@@ -13,16 +18,18 @@ documents = [
     { 'id': 5, 'text': "Vector space model merepresentasikan dokumen dan query sebagai vektor" }
 ]
 
-# --- LOGIKA INFORMATION RETRIEVAL (Diterjemahkan dari JS) ---
+# --- LOGIKA INFORMATION RETRIEVAL ---
 
 def preprocess(text):
-    """Tokenisasi, lowercase, dan hapus tanda baca."""
+    """Tokenisasi, lowercase, hapus tanda baca, dan stemming."""
     text = text.lower()
     # Menghapus karakter non-alphanumeric
     text = re.sub(r'[^\w\s]', '', text)
     # Split berdasarkan spasi dan filter string kosong
     tokens = [word for word in text.split() if word]
-    return tokens
+    # Stemming setiap token
+    stemmed_tokens = [stemmer.stem(token) for token in tokens]
+    return stemmed_tokens
 
 def calculate_tf(tokens):
     """Menghitung Term Frequency."""
